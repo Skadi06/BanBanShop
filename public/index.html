@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand__title">Shop</div>
+      <div class="brand__subtitle">Buy items with Banban Coin</div>
+    </div>
+
+    <div class="authbar" aria-label="Authentication controls">
+      <div id="authStatus" class="authbar__status">Guest</div>
+      <button id="loginBtn" class="btn btn--ghost" type="button">Log in</button>
+      <button id="logoutBtn" class="btn btn--ghost" type="button" hidden>Logout</button>
+    </div>
+
+    <div class="wallet" aria-label="Banban Coin wallet">
+      <img id="banbanCoinIcon" class="wallet__icon" alt="Banban Coin" />
+      <div class="wallet__meta">
+        <div class="wallet__label">Banban Coin</div>
+        <div class="wallet__value"><span id="balance">0</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel">
+      <div class="panel__header">
+        <h2 class="panel__title">Items</h2>
+        <div class="panel__actions">
+          <button id="adminBtn" class="btn btn--ghost" type="button">Admin</button>
+        </div>
+      </div>
+      <div id="grid" class="grid" aria-label="Items for sale"></div>
+    </section>
+
+    <aside class="panel panel--right">
+      <div class="panel__header">
+        <h2 class="panel__title">History</h2>
+        <div class="panel__subtitle">Latest 200 events</div>
+      </div>
+      <div id="history" class="history" aria-label="Purchase and balance history"></div>
+    </aside>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="adminDialog" class="dialog">
+    <form method="dialog" class="dialog__panel">
+      <div class="dialog__header">
+        <div>
+          <div class="dialog__title">Administrator</div>
+          <div class="dialog__subtitle">Only your admin account can manage coins</div>
+        </div>
+        <button class="btn btn--ghost" value="cancel" type="submit">Close</button>
+      </div>
+
+      <div id="adminLocked" class="dialog__body">
+        <div id="adminMessage" class="note">
+          Log in with the admin account to change the shopper's Banban Coin balance.
+        </div>
+      </div>
+
+      <div id="adminPanel" class="dialog__body" hidden>
+        <label class="field">
+          <div class="field__label">Coin amount for the shopper</div>
+          <input id="adminAddAmount" class="input" inputmode="numeric" placeholder="e.g. 50" />
+        </label>
+        <div class="dialog__actions">
+          <button id="adminAddBtn" class="btn btn--primary" type="button">Add</button>
+          <button id="adminMinusBtn" class="btn" type="button">Minus</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="authDialog" class="dialog">
+    <form method="dialog" class="dialog__panel">
+      <div class="dialog__header">
+        <div>
+          <div class="dialog__title">Account</div>
+          <div class="dialog__subtitle">Log in with the shopper or admin username</div>
+        </div>
+        <button class="btn btn--ghost" value="cancel" type="submit">Close</button>
+      </div>
+
+      <div class="dialog__body">
+        <label class="field">
+          <div class="field__label">Username</div>
+          <input id="authUsername" class="input" autocomplete="username" />
+        </label>
+        <label class="field">
+          <div class="field__label">Password</div>
+          <input id="authPassword" class="input" type="password" autocomplete="current-password" />
+        </label>
+        <div class="note">Sign up is disabled. Use the shopper and admin usernames you configured for this app.</div>
+        <div class="dialog__actions">
+          <button id="signinBtn" class="btn btn--primary" type="button">Log in</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="quantityDialog" class="dialog">
+    <form method="dialog" class="dialog__panel">
+      <div class="dialog__header">
+        <div>
+          <div class="dialog__title">Buy multiple</div>
+          <div id="quantityDialogSubtitle" class="dialog__subtitle">Choose how many you want to buy</div>
+        </div>
+        <button class="btn btn--ghost" value="cancel" type="submit">Close</button>
+      </div>
+
+      <div class="dialog__body">
+        <div class="note">
+          <div id="quantityItemName" class="buy-dialog__name">Item</div>
+          <div class="buy-dialog__price buy-dialog__price--plain">
+            <img id="quantityCoinIcon" class="price__icon" alt="Banban Coin" />
+            <span id="quantityItemPrice">0</span>
+            <span>each</span>
+          </div>
+        </div>
+        <label class="field">
+          <div class="field__label">Quantity</div>
+          <div class="quantity-picker">
+            <input id="quantityInput" class="input quantity-picker__input" type="number" min="1" step="1"
+              inputmode="numeric" placeholder="e.g. 100" />
+            <div class="quantity-picker__arrows" aria-hidden="true">
+              <button id="quantityIncreaseBtn" class="quantity-picker__arrow" type="button"
+                aria-label="Increase quantity">
+                <span class="quantity-picker__chevron quantity-picker__chevron--up"></span>
+              </button>
+              <button id="quantityDecreaseBtn" class="quantity-picker__arrow" type="button"
+                aria-label="Decrease quantity">
+                <span class="quantity-picker__chevron quantity-picker__chevron--down"></span>
+              </button>
+            </div>
+          </div>
+        </label>
+        <div id="quantitySummary" class="buy-dialog__summary">Total: 0 Banban Coin</div>
+        <div class="dialog__actions">
+          <button id="quantityConfirmBtn" class="btn btn--primary" type="button">Buy</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="./storage.js"></script>
+  <script src="./app.js"></script>
+</body>
+
+</html>
