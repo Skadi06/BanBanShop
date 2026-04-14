@@ -5,7 +5,7 @@ const fallbackConfig = {
         text: "For sale"
     },
     items: [
-        { id: "item1", name: "2RMB", img: "assets/IMG_8492.JPG", price: 1, status: "for_sale", multipleBuy: true },
+        { id: "item1", name: "5RMB", img: "assets/IMG_8492.JPG", price: 1, status: "for_sale", multipleBuy: true },
         { id: "item2", name: "1美金", img: "assets/item2.png", price: 1, status: "for_sale", multipleBuy: true },
         { id: "item3", name: "星ban克", img: "assets/xingbanke.png", price: 4, status: "for_sale", multipleBuy: false },
         { id: "item4", name: "banbanの口粮", img: "assets/item4.png", price: 45, status: "for_sale", multipleBuy: false },

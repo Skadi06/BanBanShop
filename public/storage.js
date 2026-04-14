@@ -14,7 +14,7 @@ async function apiFetch(path, body) {
     const response = await fetch(path, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json; charset=UTF-8",
             ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
         body: JSON.stringify(body || {})
