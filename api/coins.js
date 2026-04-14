@@ -30,10 +30,10 @@ module.exports = async function handler(req, res) {
       }
       nextCoins = currentCoins + amount;
       if (amount > 0) {
-        historyProduct = `å…”å…”é“¶è¡Œå¢žåŠ  ${amount} banbanå¸`;
+        historyProduct = `兔兔银行增加 ${amount} banban币`;
         historyPrice = amount;
       } else {
-        historyProduct = `å…”å…”é“¶è¡Œæ‰£é™¤ ${Math.abs(amount)} banbanå¸`;
+        historyProduct = `兔兔银行扣除 ${Math.abs(amount)} banban币`;
         historyPrice = amount;
       }
     } else {
