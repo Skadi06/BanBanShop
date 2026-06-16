@@ -11,12 +11,12 @@ const fallbackConfig = {
         { id: "item4", name: "banbanの口粮", img: "assets/item4.png", price: 45, status: "for_sale", multipleBuy: false },
         { id: "item5", name: "banban宅家送", img: "assets/item3.jpg", price: 10, status: "for_sale", multipleBuy: false },
         { id: "item6", name: "1日ban神头衔体验卡：《聪慧的》", img: "assets/conghui.png", price: 1, status: "limited", limit: 5, multipleBuy: false },
-        { id: "item7", name: "???", img: "assets/item7.png", price: 28, status: "sold_out", multipleBuy: false },
+        { id: "item7", name: "banban化妆大礼包", img: "assets/libao.png", price: 400, status: "limited", limit: 1, multipleBuy: false },
         { id: "item8", name: "???", img: "assets/item8.png", price: 30, status: "sold_out", multipleBuy: false },
         { id: "item9", name: "???", img: "assets/item9.png", price: 35, status: "sold_out", multipleBuy: false },
         { id: "item10", name: "???", img: "assets/item10.png", price: 40, status: "sold_out", multipleBuy: false },
         { id: "item11", name: "???", img: "assets/item11.png", price: 45, status: "sold_out", multipleBuy: false },
-        { id: "item12", name: "ipad Pro", img: "assets/item12.png", price: 650, status: "coming_soon", multipleBuy: false }
+        { id: "item12", name: "banbanのipad Pro", img: "assets/item12.png", price: 650, status: "coming_soon", multipleBuy: false }
     ]
 };
 
