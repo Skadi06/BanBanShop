@@ -5,11 +5,11 @@ const fallbackConfig = {
         text: "For sale"
     },
     items: [
-        { id: "item1", name: "5RMB", img: "assets/IMG_8492.JPG", price: 1, status: "for_sale", multipleBuy: true },
-        { id: "item2", name: "1美金", img: "assets/item2.png", price: 1, status: "for_sale", multipleBuy: true },
+        { id: "item1", name: "5RMB", img: "assets/rmb.png", price: 1, status: "for_sale", multipleBuy: true },
+        { id: "item2", name: "1美金", img: "assets/meijin.png", price: 1, status: "for_sale", multipleBuy: true },
         { id: "item3", name: "星ban克", img: "assets/xingbanke.png", price: 4, status: "for_sale", multipleBuy: false },
         { id: "item4", name: "banbanの口粮", img: "assets/item4.png", price: 45, status: "for_sale", multipleBuy: false },
-        { id: "item5", name: "banban宅家送", img: "assets/item3.jpg", price: 10, status: "for_sale", multipleBuy: false },
+        { id: "item5", name: "banban宅家送", img: "assets/waimai.png", price: 10, status: "for_sale", multipleBuy: false },
         { id: "item6", name: "1日ban神头衔体验卡：《聪慧的》", img: "assets/conghui.png", price: 1, status: "limited", limit: 5, multipleBuy: false },
         { id: "item7", name: "banban化妆大礼包", img: "assets/libao.png", price: 400, status: "limited", limit: 1, multipleBuy: false },
         { id: "item8", name: "???", img: "assets/item8.png", price: 30, status: "sold_out", multipleBuy: false },
