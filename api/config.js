@@ -42,7 +42,7 @@ function getDefaultItems() {
         { id: "item9", name: "???", img: "assets/item9.png", price: 35, status: "sold_out", multipleBuy: false },
         { id: "item10", name: "???", img: "assets/item10.png", price: 40, status: "sold_out", multipleBuy: false },
         { id: "item11", name: "???", img: "assets/item11.png", price: 45, status: "sold_out", multipleBuy: false },
-        { id: "item12", name: "banbanのipad Pro", img: "assets/item12.png", price: 650, status: "coming_soon", multipleBuy: false }
+        { id: "item12", name: "banbanのipad Pro", img: "assets/ipad.png", price: 650, status: "limited", limit: 1, multipleBuy: false }
     ];
 }
 
