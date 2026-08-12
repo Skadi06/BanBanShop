@@ -36,6 +36,20 @@ module.exports = async function handler(req, res) {
         historyProduct = `兔兔银行扣除 ${Math.abs(amount)} banban币`;
         historyPrice = amount;
       }
+    } else if (mode === "set_owed") {
+      const amount = Number(req.body?.amount);
+      if (!Number.isInteger(amount) || amount < 0) {
+        return res.status(400).json({ error: "Invalid owed amount" });
+      }
+
+      await upsertShopState({
+        coins: currentCoins,
+        coins_owed: amount,
+        last_login: shopRow?.last_login || new Date().toISOString()
+      });
+
+      const state = await buildState(actor);
+      return res.status(200).json(state);
     } else {
       return res.status(400).json({ error: "Invalid mode" });
     }
@@ -46,6 +60,7 @@ module.exports = async function handler(req, res) {
 
     await upsertShopState({
       coins: nextCoins,
+      coins_owed: Number(shopRow?.coins_owed || 0),
       last_login: shopRow?.last_login || new Date().toISOString()
     });
 

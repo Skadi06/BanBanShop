@@ -83,6 +83,12 @@ body {
   white-space: nowrap;
 }
 
+.wallets {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .wallet {
   display: flex;
   align-items: center;
@@ -95,10 +101,28 @@ body {
 }
 
 @media (max-width: 760px) {
-  .wallet {
+  .wallets {
     width: 100%;
+  }
+
+  .wallet {
+    flex: 1;
     justify-content: center;
   }
+}
+
+.wallet--owed {
+  border-color: rgba(124, 92, 255, 0.45);
+}
+
+.wallet--owed .wallet__value {
+  color: var(--danger);
+}
+
+.btn--pay {
+  padding: 6px 9px;
+  font-size: 12px;
+  margin-left: 4px;
 }
 
 .wallet__icon {

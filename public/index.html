@@ -21,11 +21,21 @@
       <button id="logoutBtn" class="btn btn--ghost" type="button" hidden>Logout</button>
     </div>
 
-    <div class="wallet" aria-label="Banban Coin wallet">
-      <img id="banbanCoinIcon" class="wallet__icon" alt="Banban Coin" />
-      <div class="wallet__meta">
-        <div class="wallet__label">Banban Coin</div>
-        <div class="wallet__value"><span id="balance">0</span></div>
+    <div class="wallets" aria-label="Banban Coin balances">
+      <div class="wallet wallet--owed" aria-label="Banban Coin owed">
+        <div class="wallet__meta">
+          <div class="wallet__label">Banban Coin Owed</div>
+          <div class="wallet__value"><span id="owedBalance">0</span></div>
+        </div>
+        <button id="payOwedBtn" class="btn btn--pay" type="button" disabled>Pay</button>
+      </div>
+
+      <div class="wallet" aria-label="Banban Coin wallet">
+        <img id="banbanCoinIcon" class="wallet__icon" alt="Banban Coin" />
+        <div class="wallet__meta">
+          <div class="wallet__label">Banban Coin</div>
+          <div class="wallet__value"><span id="balance">0</span></div>
+        </div>
       </div>
     </div>
   </header>
@@ -73,9 +83,14 @@
           <div class="field__label">Coin amount for the shopper</div>
           <input id="adminAddAmount" class="input" inputmode="numeric" placeholder="e.g. 50" />
         </label>
+        <label class="field">
+          <div class="field__label">Banban Coin owed by the shopper</div>
+          <input id="adminOwedAmount" class="input" inputmode="numeric" placeholder="e.g. 20" />
+        </label>
         <div class="dialog__actions">
           <button id="adminAddBtn" class="btn btn--primary" type="button">Add</button>
           <button id="adminMinusBtn" class="btn" type="button">Minus</button>
+          <button id="adminSetOwedBtn" class="btn" type="button">Set owed</button>
         </div>
       </div>
     </form>

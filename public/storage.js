@@ -66,8 +66,9 @@ function mapPurchaseToHistoryRow(purchase) {
 function normalizeState(payload) {
     return {
         viewer: payload.viewer || null,
-        shopper: payload.shopper || { username: null, coins: 0, last_login: null },
+        shopper: payload.shopper || { username: null, coins: 0, coins_owed: 0, last_login: null },
         balance: Number(payload.shopper?.coins || 0),
+        owed: Number(payload.shopper?.coins_owed || 0),
         history: Array.isArray(payload.history) ? payload.history.map(mapPurchaseToHistoryRow) : []
     };
 }
@@ -77,8 +78,9 @@ async function getState() {
     if (!token) {
         return {
             viewer: null,
-            shopper: { username: null, coins: 0, last_login: null },
+            shopper: { username: null, coins: 0, coins_owed: 0, last_login: null },
             balance: 0,
+            owed: 0,
             history: []
         };
     }
@@ -114,6 +116,20 @@ async function purchase({ itemName, price, quantity }) {
     return normalizeState(payload);
 }
 
+async function setOwed(amount) {
+    if (!Number.isInteger(amount) || amount < 0) {
+        throw new Error("owed_amount_must_be_non_negative_integer");
+    }
+
+    const payload = await apiFetch("/api/coins", { mode: "set_owed", amount });
+    return normalizeState(payload);
+}
+
+async function payOwed() {
+    const payload = await apiFetch("/api/pay-owed");
+    return normalizeState(payload);
+}
+
 async function signIn(username, password) {
     const payload = await apiFetch("/api/auth-login", { username, password });
     setAccessToken(payload.access_token);
@@ -144,5 +160,7 @@ window.BanbanStore = {
     getState,
     setBalance,
     addCoins,
+    setOwed,
+    payOwed,
     purchase
 };

@@ -1,11 +1,15 @@
 create table if not exists public.shop_state (
   id integer primary key check (id = 1),
   coins integer not null default 0 check (coins >= 0),
+  coins_owed integer not null default 0 check (coins_owed >= 0),
   last_login timestamptz
 );
 
-insert into public.shop_state (id, coins, last_login)
-values (1, 0, null)
+alter table public.shop_state
+  add column if not exists coins_owed integer not null default 0 check (coins_owed >= 0);
+
+insert into public.shop_state (id, coins, coins_owed, last_login)
+values (1, 0, 0, null)
 on conflict (id) do nothing;
 
 create table if not exists public.shop_purchases (

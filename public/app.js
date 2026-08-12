@@ -26,6 +26,8 @@ const $ = (sel) => document.querySelector(sel);
 const grid = $("#grid");
 const historyEl = $("#history");
 const balanceEl = $("#balance");
+const owedBalanceEl = $("#owedBalance");
+const payOwedBtn = $("#payOwedBtn");
 const coinIconEl = $("#banbanCoinIcon");
 const toast = $("#toast");
 const adminBtn = $("#adminBtn");
@@ -36,6 +38,8 @@ const adminMessage = $("#adminMessage");
 const adminAddAmount = $("#adminAddAmount");
 const adminAddBtn = $("#adminAddBtn");
 const adminMinusBtn = $("#adminMinusBtn");
+const adminOwedAmount = $("#adminOwedAmount");
+const adminSetOwedBtn = $("#adminSetOwedBtn");
 const authStatus = $("#authStatus");
 const loginBtn = $("#loginBtn");
 const logoutBtn = $("#logoutBtn");
@@ -56,8 +60,9 @@ const quantityIncreaseBtn = $("#quantityIncreaseBtn");
 
 let state = {
     viewer: null,
-    shopper: { username: null, coins: 0, last_login: null },
+    shopper: { username: null, coins: 0, coins_owed: 0, last_login: null },
     balance: 0,
+    owed: 0,
     history: []
 };
 
@@ -186,6 +191,10 @@ async function apiAdd(amount) {
     return await window.BanbanStore.addCoins(amount);
 }
 
+async function apiSetOwed(amount) {
+    return await window.BanbanStore.setOwed(amount);
+}
+
 async function apiSet(balance) {
     return await window.BanbanStore.setBalance(balance);
 }
@@ -279,6 +288,16 @@ async function submitPurchase(item, btn, quantity) {
 
 function renderBalance() {
     balanceEl.textContent = String(state.balance);
+}
+
+async function apiPayOwed() {
+    return await window.BanbanStore.payOwed();
+}
+
+function renderOwedBalance() {
+    const owed = Number(state.owed) || 0;
+    if (owedBalanceEl) owedBalanceEl.textContent = String(owed);
+    if (payOwedBtn) payOwedBtn.disabled = owed <= 0 || !isShopperViewer() || state.balance < owed;
 }
 
 function renderAuth() {
@@ -389,6 +408,7 @@ function renderAll() {
     if (coinIconEl) coinIconEl.src = appConfig.coinImage;
     renderAuth();
     renderBalance();
+    renderOwedBalance();
     renderGrid();
     renderHistory();
     renderAdminDialog();
@@ -421,7 +441,7 @@ async function init() {
         const sessionUser = await window.BanbanAuth.getSessionUser();
         state = sessionUser ? await window.BanbanAuth.login() : await apiGetState();
     } catch (_e) {
-        state = { viewer: null, shopper: { username: null, coins: 0, last_login: null }, balance: 0, history: [] };
+        state = { viewer: null, shopper: { username: null, coins: 0, coins_owed: 0, last_login: null }, balance: 0, owed: 0, history: [] };
     }
     renderAll();
     renderAdminDialog();
@@ -434,11 +454,21 @@ async function init() {
     logoutBtn?.addEventListener("click", async () => {
         try {
             await window.BanbanAuth.signOut();
-            state = { viewer: null, shopper: { username: null, coins: 0, last_login: null }, balance: 0, history: [] };
+            state = { viewer: null, shopper: { username: null, coins: 0, coins_owed: 0, last_login: null }, balance: 0, owed: 0, history: [] };
             renderAll();
             showToast("Logged out");
         } catch (e) {
             showToast(String(e?.message || "Logout failed"));
+        }
+    });
+
+    payOwedBtn?.addEventListener("click", async () => {
+        try {
+            state = await apiPayOwed();
+            renderAll();
+            showToast("Banban Coin owed payment completed");
+        } catch (e) {
+            showToast(String(e?.message || "Owed payment failed"));
         }
     });
 
@@ -557,6 +587,24 @@ async function init() {
             if (adminDialog?.open) adminDialog.close();
         } catch (e) {
             showToast(String(e?.message || "Failed to minus coins"));
+        }
+    });
+
+    adminSetOwedBtn?.addEventListener("click", async () => {
+        if (!isAdminViewer()) return showToast("Admin account required");
+        const amount = Number(String(adminOwedAmount?.value || "").trim());
+        if (!Number.isInteger(amount) || amount < 0) {
+            return showToast("Enter a zero or positive whole number");
+        }
+
+        try {
+            state = await apiSetOwed(amount);
+            renderAll();
+            showToast(`Set Banban Coin owed to ${amount}`);
+            if (adminOwedAmount) adminOwedAmount.value = "";
+            if (adminDialog?.open) adminDialog.close();
+        } catch (e) {
+            showToast(String(e?.message || "Failed to set owed balance"));
         }
     });
 }
