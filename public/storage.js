@@ -36,13 +36,17 @@ function mapPurchaseToHistoryRow(purchase) {
     const itemName = String(purchase.product || "");
     const rawAmount = Number(purchase.price) || 0;
     const isAdminHistory = isAdminCoinHistory(itemName);
+    const isOwedPayment = itemName === "Banban Coin owed payment";
     const isAdminDeduction = /扣除/.test(itemName);
     const isAdminAddition = /增加/.test(itemName);
 
     let amount = -Math.abs(rawAmount);
     let type = "purchase";
 
-    if (isAdminHistory) {
+    if (isOwedPayment) {
+        type = "owed_payment";
+        amount = -Math.abs(rawAmount);
+    } else if (isAdminHistory) {
         type = "admin_adjustment";
 
         if (rawAmount < 0 || isAdminDeduction) {
@@ -125,8 +129,8 @@ async function setOwed(amount) {
     return normalizeState(payload);
 }
 
-async function payOwed() {
-    const payload = await apiFetch("/api/pay-owed");
+async function payOwed(amount) {
+    const payload = await apiFetch("/api/pay-owed", { amount });
     return normalizeState(payload);
 }
 

@@ -290,14 +290,14 @@ function renderBalance() {
     balanceEl.textContent = String(state.balance);
 }
 
-async function apiPayOwed() {
-    return await window.BanbanStore.payOwed();
+async function apiPayOwed(amount) {
+    return await window.BanbanStore.payOwed(amount);
 }
 
 function renderOwedBalance() {
     const owed = Number(state.owed) || 0;
     if (owedBalanceEl) owedBalanceEl.textContent = String(owed);
-    if (payOwedBtn) payOwedBtn.disabled = owed <= 0 || !isShopperViewer() || state.balance < owed;
+    if (payOwedBtn) payOwedBtn.disabled = owed <= 0 || !isShopperViewer() || state.balance <= 0;
 }
 
 function renderAuth() {
@@ -382,6 +382,8 @@ function renderHistory() {
         const label =
             h.type === "purchase"
                 ? `Purchased ${h.itemName || "item"}`
+                : h.type === "owed_payment"
+                    ? "Paid Banban Coin owed"
                 : h.type === "earn"
                     ? "Earned coins"
                     : h.type === "admin_adjustment"
@@ -463,10 +465,19 @@ async function init() {
     });
 
     payOwedBtn?.addEventListener("click", async () => {
+        const maximumPayment = Math.min(Number(state.owed) || 0, Number(state.balance) || 0);
+        const enteredAmount = window.prompt(`Pay Banban Coin owed (maximum ${maximumPayment}):`, String(maximumPayment));
+        if (enteredAmount === null) return;
+
+        const amount = Number(String(enteredAmount).trim());
+        if (!Number.isInteger(amount) || amount <= 0) {
+            return showToast("Enter a positive whole-number payment");
+        }
+
         try {
-            state = await apiPayOwed();
+            state = await apiPayOwed(amount);
             renderAll();
-            showToast("Banban Coin owed payment completed");
+            showToast(`Paid ${amount} Banban Coin toward the amount owed`);
         } catch (e) {
             showToast(String(e?.message || "Owed payment failed"));
         }
