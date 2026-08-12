@@ -57,6 +57,13 @@ const quantityItemPrice = $("#quantityItemPrice");
 const quantityCoinIcon = $("#quantityCoinIcon");
 const quantityDecreaseBtn = $("#quantityDecreaseBtn");
 const quantityIncreaseBtn = $("#quantityIncreaseBtn");
+const owedPaymentDialog = $("#owedPaymentDialog");
+const owedPaymentTotal = $("#owedPaymentTotal");
+const owedPaymentInput = $("#owedPaymentInput");
+const owedPaymentSummary = $("#owedPaymentSummary");
+const owedPaymentConfirmBtn = $("#owedPaymentConfirmBtn");
+const owedPaymentDecreaseBtn = $("#owedPaymentDecreaseBtn");
+const owedPaymentIncreaseBtn = $("#owedPaymentIncreaseBtn");
 
 let state = {
     viewer: null,
@@ -69,6 +76,7 @@ let state = {
 let pendingPurchaseItem = null;
 let pendingPurchaseButton = null;
 let isSubmittingQuantityPurchase = false;
+let isSubmittingOwedPayment = false;
 
 function normalizeItem(item) {
     return {
@@ -290,6 +298,35 @@ function renderBalance() {
     balanceEl.textContent = String(state.balance);
 }
 
+function getMaximumOwedPayment() {
+    return Math.min(Number(state.owed) || 0, Number(state.balance) || 0);
+}
+
+function updateOwedPaymentSummary() {
+    if (!owedPaymentSummary) return;
+    const amount = getValidatedQuantity(owedPaymentInput?.value) || 0;
+    const remaining = Math.max(0, (Number(state.owed) || 0) - amount);
+    owedPaymentSummary.textContent = `Remaining owed: ${remaining} Banban Coin`;
+}
+
+function setOwedPaymentValue(nextAmount) {
+    if (!owedPaymentInput) return;
+    const maximum = getMaximumOwedPayment();
+    owedPaymentInput.value = String(Math.min(Math.max(1, nextAmount || 1), maximum));
+    updateOwedPaymentSummary();
+}
+
+function openOwedPaymentDialog() {
+    const maximum = getMaximumOwedPayment();
+    if (maximum <= 0) return showToast("No Banban Coin is available to pay the amount owed");
+    isSubmittingOwedPayment = false;
+    if (owedPaymentTotal) owedPaymentTotal.textContent = String(state.owed);
+    setOwedPaymentValue(maximum);
+    owedPaymentDialog?.showModal();
+    owedPaymentInput?.focus();
+    owedPaymentInput?.select();
+}
+
 async function apiPayOwed(amount) {
     return await window.BanbanStore.payOwed(amount);
 }
@@ -465,21 +502,38 @@ async function init() {
     });
 
     payOwedBtn?.addEventListener("click", async () => {
-        const maximumPayment = Math.min(Number(state.owed) || 0, Number(state.balance) || 0);
-        const enteredAmount = window.prompt(`Pay Banban Coin owed (maximum ${maximumPayment}):`, String(maximumPayment));
-        if (enteredAmount === null) return;
+        openOwedPaymentDialog();
+    });
 
-        const amount = Number(String(enteredAmount).trim());
-        if (!Number.isInteger(amount) || amount <= 0) {
-            return showToast("Enter a positive whole-number payment");
+    owedPaymentInput?.addEventListener("input", updateOwedPaymentSummary);
+
+    owedPaymentDecreaseBtn?.addEventListener("click", () => {
+        setOwedPaymentValue((getValidatedQuantity(owedPaymentInput?.value) || 1) - 1);
+    });
+
+    owedPaymentIncreaseBtn?.addEventListener("click", () => {
+        setOwedPaymentValue((getValidatedQuantity(owedPaymentInput?.value) || 1) + 1);
+    });
+
+    owedPaymentConfirmBtn?.addEventListener("click", async () => {
+        const amount = getValidatedQuantity(owedPaymentInput?.value);
+        const maximum = getMaximumOwedPayment();
+        if (!amount || amount > maximum) {
+            return showToast(`Enter an amount from 1 to ${maximum}`);
         }
 
+        isSubmittingOwedPayment = true;
+        owedPaymentConfirmBtn.disabled = true;
         try {
             state = await apiPayOwed(amount);
             renderAll();
+            owedPaymentDialog?.close();
             showToast(`Paid ${amount} Banban Coin toward the amount owed`);
         } catch (e) {
             showToast(String(e?.message || "Owed payment failed"));
+        } finally {
+            owedPaymentConfirmBtn.disabled = false;
+            isSubmittingOwedPayment = false;
         }
     });
 

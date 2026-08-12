@@ -15,19 +15,19 @@ module.exports = async function handler(req, res) {
         const amount = Number(req.body?.amount);
 
         if (owed <= 0) {
-            return res.status(400).json({ error: "No Banban Coin is owed" });
+            return res.status(400).json({ error: "无BanBan欠款" });
         }
 
         if (!Number.isInteger(amount) || amount <= 0) {
-            return res.status(400).json({ error: "Enter a valid payment amount" });
+            return res.status(400).json({ error: "输入BanBan还款金额" });
         }
 
         if (amount > owed) {
-            return res.status(400).json({ error: "Payment cannot exceed the Banban Coin owed" });
+            return res.status(400).json({ error: "BanBan还款超过欠款" });
         }
 
         if (amount > coins) {
-            return res.status(400).json({ error: "Not enough Banban Coin for this payment" });
+            return res.status(400).json({ error: "BanBan币不足" });
         }
 
         await upsertShopState({
@@ -37,13 +37,13 @@ module.exports = async function handler(req, res) {
         });
 
         const { error } = await supabaseAdmin.from("shop_purchases").insert({
-            product: "Banban Coin owed payment",
+            product: "BanBan还款",
             price: amount
         });
         if (error) throw error;
 
         return res.status(200).json(await buildState(actor));
     } catch (error) {
-        return res.status(400).json({ error: error.message || "Owed payment failed" });
+        return res.status(400).json({ error: error.message || "支付失败" });
     }
 };

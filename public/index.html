@@ -167,6 +167,48 @@
     </form>
   </dialog>
 
+  <dialog id="owedPaymentDialog" class="dialog">
+    <form method="dialog" class="dialog__panel">
+      <div class="dialog__header">
+        <div>
+          <div class="dialog__title">Pay Banban Coin Owed</div>
+          <div class="dialog__subtitle">Choose how much Banban Coin to pay</div>
+        </div>
+        <button class="btn btn--ghost" value="cancel" type="submit">Close</button>
+      </div>
+
+      <div class="dialog__body">
+        <div class="note">
+          <div class="buy-dialog__name">Banban Coin Owed</div>
+          <div class="buy-dialog__price buy-dialog__price--plain">
+            <span>Amount owed: </span><span id="owedPaymentTotal">0</span>
+          </div>
+        </div>
+        <label class="field">
+          <div class="field__label">Payment amount</div>
+          <div class="quantity-picker">
+            <input id="owedPaymentInput" class="input quantity-picker__input" type="number" min="1" step="1"
+              inputmode="numeric" placeholder="e.g. 20" />
+            <div class="quantity-picker__arrows" aria-hidden="true">
+              <button id="owedPaymentIncreaseBtn" class="quantity-picker__arrow" type="button"
+                aria-label="Increase payment amount">
+                <span class="quantity-picker__chevron quantity-picker__chevron--up"></span>
+              </button>
+              <button id="owedPaymentDecreaseBtn" class="quantity-picker__arrow" type="button"
+                aria-label="Decrease payment amount">
+                <span class="quantity-picker__chevron quantity-picker__chevron--down"></span>
+              </button>
+            </div>
+          </div>
+        </label>
+        <div id="owedPaymentSummary" class="buy-dialog__summary">Remaining owed: 0 Banban Coin</div>
+        <div class="dialog__actions">
+          <button id="owedPaymentConfirmBtn" class="btn btn--primary" type="button">Pay</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
   <script src="./storage.js"></script>
   <script src="./app.js"></script>
 </body>
