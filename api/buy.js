@@ -14,22 +14,22 @@ module.exports = async function handler(req, res) {
         const quantity = Number(req.body?.quantity);
 
         if (!product) {
-            return res.status(400).json({ error: "Missing product" });
+            return res.status(400).json({ error: "缺少商品" });
         }
 
         if (!Number.isInteger(price) || price <= 0) {
-            return res.status(400).json({ error: "Invalid price" });
+            return res.status(400).json({ error: "无效价格" });
         }
 
         if (!Number.isInteger(quantity) || quantity <= 0) {
-            return res.status(400).json({ error: "Invalid quantity" });
+            return res.status(400).json({ error: "无效数量" });
         }
 
         const totalPrice = price * quantity;
         const shopRow = await getShopStateRow();
         const currentCoins = Number(shopRow?.coins || 0);
         if (currentCoins < totalPrice) {
-            return res.status(400).json({ error: "Not enough coins" });
+            return res.status(400).json({ error: "BanBan币不足" });
         }
 
         await upsertShopState({
@@ -47,6 +47,6 @@ module.exports = async function handler(req, res) {
         const state = await buildState(actor);
         return res.status(200).json(state);
     } catch (error) {
-        return res.status(400).json({ error: error.message || "Purchase failed" });
+        return res.status(400).json({ error: error.message || "购买失败" });
     }
 };

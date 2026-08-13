@@ -39,7 +39,8 @@ const adminAddAmount = $("#adminAddAmount");
 const adminAddBtn = $("#adminAddBtn");
 const adminMinusBtn = $("#adminMinusBtn");
 const adminOwedAmount = $("#adminOwedAmount");
-const adminSetOwedBtn = $("#adminSetOwedBtn");
+const adminAddOwedBtn = $("#adminAddOwedBtn");
+const adminMinusOwedBtn = $("#adminMinusOwedBtn");
 const authStatus = $("#authStatus");
 const loginBtn = $("#loginBtn");
 const logoutBtn = $("#logoutBtn");
@@ -199,8 +200,8 @@ async function apiAdd(amount) {
     return await window.BanbanStore.addCoins(amount);
 }
 
-async function apiSetOwed(amount) {
-    return await window.BanbanStore.setOwed(amount);
+async function apiAdjustOwed(amount) {
+    return await window.BanbanStore.adjustOwed(amount);
 }
 
 async function apiSet(balance) {
@@ -419,15 +420,17 @@ function renderHistory() {
         const label =
             h.type === "purchase"
                 ? `Purchased ${h.itemName || "item"}`
-                : h.type === "owed_payment"
-                    ? "Paid Banban Coin owed"
-                : h.type === "earn"
-                    ? "Earned coins"
-                    : h.type === "admin_adjustment"
-                        ? "兔兔银行"
-                        : h.type === "set_balance"
-                            ? "Balance set"
-                            : h.type;
+                : h.type === "BanBan还款"
+                    ? "BanBan偿还"
+                    : h.type === "兔兔银行"
+                        ? h.amount >= 0 ? "BanBan欠款" : "BanBan还款"
+                        : h.type === "earn"
+                            ? "Earned coins"
+                            : h.type === "admin_adjustment"
+                                ? "兔兔银行"
+                                : h.type === "set_balance"
+                                    ? "Balance set"
+                                    : h.type;
         const metaLine = h.type === "purchase" || h.type === "admin_adjustment" ? `Item: ${h.itemName}` : "";
 
         const el = document.createElement("div");
@@ -655,22 +658,30 @@ async function init() {
         }
     });
 
-    adminSetOwedBtn?.addEventListener("click", async () => {
+    async function adjustOwedFromAdmin(amount) {
         if (!isAdminViewer()) return showToast("Admin account required");
-        const amount = Number(String(adminOwedAmount?.value || "").trim());
-        if (!Number.isInteger(amount) || amount < 0) {
-            return showToast("Enter a zero or positive whole number");
-        }
 
         try {
-            state = await apiSetOwed(amount);
+            state = await apiAdjustOwed(amount);
             renderAll();
-            showToast(`Set Banban Coin owed to ${amount}`);
+            showToast(`${amount > 0 ? "Added" : "Removed"} ${Math.abs(amount)} Banban Coin owed`);
             if (adminOwedAmount) adminOwedAmount.value = "";
             if (adminDialog?.open) adminDialog.close();
         } catch (e) {
-            showToast(String(e?.message || "Failed to set owed balance"));
+            showToast(String(e?.message || "Failed to update owed balance"));
         }
+    }
+
+    adminAddOwedBtn?.addEventListener("click", async () => {
+        const amount = Number(String(adminOwedAmount?.value || "").trim());
+        if (!Number.isInteger(amount) || amount <= 0) return showToast("Enter a positive whole number");
+        await adjustOwedFromAdmin(amount);
+    });
+
+    adminMinusOwedBtn?.addEventListener("click", async () => {
+        const amount = Number(String(adminOwedAmount?.value || "").trim());
+        if (!Number.isInteger(amount) || amount <= 0) return showToast("Enter a positive whole number");
+        await adjustOwedFromAdmin(-amount);
     });
 }
 

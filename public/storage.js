@@ -36,7 +36,8 @@ function mapPurchaseToHistoryRow(purchase) {
     const itemName = String(purchase.product || "");
     const rawAmount = Number(purchase.price) || 0;
     const isAdminHistory = isAdminCoinHistory(itemName);
-    const isOwedPayment = itemName === "Banban Coin owed payment";
+    const isOwedPayment = itemName === "Banban Coin owed payment" || /还款/.test(itemName);
+    const isOwedAdjustment = /欠款/.test(itemName) && /管理员/.test(itemName);
     const isAdminDeduction = /扣除/.test(itemName);
     const isAdminAddition = /增加/.test(itemName);
 
@@ -46,6 +47,9 @@ function mapPurchaseToHistoryRow(purchase) {
     if (isOwedPayment) {
         type = "owed_payment";
         amount = -Math.abs(rawAmount);
+    } else if (isOwedAdjustment) {
+        type = "owed_adjustment";
+        amount = rawAmount;
     } else if (isAdminHistory) {
         type = "admin_adjustment";
 
@@ -129,6 +133,15 @@ async function setOwed(amount) {
     return normalizeState(payload);
 }
 
+async function adjustOwed(amount) {
+    if (!Number.isInteger(amount) || amount === 0) {
+        throw new Error("owed_amount_must_be_non_zero_integer");
+    }
+
+    const payload = await apiFetch("/api/coins", { mode: "increment_owed", amount });
+    return normalizeState(payload);
+}
+
 async function payOwed(amount) {
     const payload = await apiFetch("/api/pay-owed", { amount });
     return normalizeState(payload);
@@ -165,6 +178,7 @@ window.BanbanStore = {
     setBalance,
     addCoins,
     setOwed,
+    adjustOwed,
     payOwed,
     purchase
 };
