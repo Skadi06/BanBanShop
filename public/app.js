@@ -419,10 +419,10 @@ function renderHistory() {
         const amtClass = amt >= 0 ? "hitem__amt--pos" : "hitem__amt--neg";
         const label =
             h.type === "purchase"
-                ? `Purchased ${h.itemName || "item"}`
-                : h.type === "BanBan还款"
-                    ? "BanBan偿还"
-                    : h.type === "兔兔银行"
+                ? `购买 ${h.itemName || "item"}`
+                : h.type === "owed_payment"
+                    ? "BanBan还款"
+                    : h.type === "owed_adjustment"
                         ? h.amount >= 0 ? "BanBan欠款" : "BanBan还款"
                         : h.type === "earn"
                             ? "Earned coins"
