@@ -31,11 +31,11 @@ module.exports = async function handler(req, res) {
     if (mode === "increment") {
       nextCoins = coins + amount;
       if (nextCoins < 0) return res.status(400).json({ error: "Balance cannot go below zero" });
-      historyProduct = amount > 0 ? "管理员增加 Banban币" : "管理员减少 Banban币";
+      historyProduct = amount > 0 ? "admin_add_coin" : "admin_minus_coin";
     } else if (mode === "increment_owed") {
       nextOwed = owed + amount;
       if (nextOwed < 0) return res.status(400).json({ error: "Owed balance cannot go below zero" });
-      historyProduct = amount > 0 ? "管理员增加欠款" : "管理员减少欠款";
+      historyProduct = amount > 0 ? "admin_add_owed" : "admin_minus_owed";
     } else {
       return res.status(400).json({ error: "Invalid mode" });
     }

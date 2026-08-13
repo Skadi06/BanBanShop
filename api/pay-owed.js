@@ -22,7 +22,7 @@ module.exports = async function handler(req, res) {
       last_login: shopRow?.last_login || new Date().toISOString()
     });
 
-    const { error } = await supabaseAdmin.from("shop_purchases").insert({ product: "用户偿还欠款", price: amount });
+    const { error } = await supabaseAdmin.from("shop_purchases").insert({ product: "user_pay_owed", price: amount });
     if (error) throw error;
 
     return res.status(200).json(await buildState(actor));

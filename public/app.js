@@ -439,12 +439,14 @@ function renderHistory() {
                     : h.type === "admin_adjustment"
                         ? amt >= 0 ? "兔兔银行增加" : "兔兔银行扣除"
                         : label;
-        const finalLabel =
-            h.type === "owed_payment"
-                ? "\u7528\u6237\u507f\u8fd8\u6b20\u6b3e"
-                : h.type === "owed_adjustment"
-                    ? amt >= 0 ? "\u7ba1\u7406\u5458\u51cf\u5c11\u6b20\u6b3e" : "\u7ba1\u7406\u5458\u589e\u52a0\u6b20\u6b3e"
-                    : displayLabel;
+        const historyLabels = {
+            admin_add_coin: "\u5154\u5154\u94f6\u884c\u589e\u52a0 Banban\u5e01",
+            admin_minus_coin: "\u5154\u5154\u94f6\u884c\u51cf\u5c11 Banban\u5e01",
+            admin_add_owed: "\u5154\u5154\u94f6\u884c\u589e\u52a0\u6b20\u6b3e",
+            admin_minus_owed: "\u5154\u5154\u94f6\u884c\u51cf\u5c11\u6b20\u6b3e",
+            user_pay_owed: "BanBan\u8fd8\u6b3e"
+        };
+        const finalLabel = historyLabels[h.type] || displayLabel;
         const metaLine = h.type === "purchase" ? `Item: ${h.itemName}` : "";
 
         const el = document.createElement("div");
