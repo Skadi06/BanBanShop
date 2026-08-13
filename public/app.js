@@ -431,13 +431,21 @@ function renderHistory() {
                                 : h.type === "set_balance"
                                     ? "Balance set"
                                     : h.type;
-        const metaLine = h.type === "purchase" || h.type === "admin_adjustment" ? `Item: ${h.itemName}` : "";
+        const displayLabel =
+            h.type === "owed_payment"
+                ? "BanBan还款"
+                : h.type === "owed_adjustment"
+                    ? amt >= 0 ? "BanBan贷款" : "BanBan还款"
+                    : h.type === "admin_adjustment"
+                        ? amt >= 0 ? "兔兔银行增加" : "兔兔银行扣除"
+                        : label;
+        const metaLine = h.type === "purchase" ? `Item: ${h.itemName}` : "";
 
         const el = document.createElement("div");
         el.className = "hitem";
         el.innerHTML = `
       <div class="hitem__top">
-        <div class="hitem__type">${escapeHtml(label)}</div>
+        <div class="hitem__type">${escapeHtml(displayLabel)}</div>
         <div class="hitem__amt ${amtClass}">${amt >= 0 ? "+" : ""}${amt}</div>
       </div>
       <div class="hitem__meta">${escapeHtml(fmtTs(h.ts))}${metaLine ? " - " + escapeHtml(metaLine) : ""}</div>
