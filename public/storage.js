@@ -25,10 +25,15 @@ function mapPurchaseToHistoryRow(purchase) {
         type = "owed_payment";
     } else if (itemName === "管理员增加欠款" || itemName === "管理员减少欠款" || itemName.includes("\u6b20\u6b3e")) {
         type = "owed_adjustment";
-        amount = rawAmount;
+        amount = itemName.includes("减少") ? -Math.abs(rawAmount) : Math.abs(rawAmount);
     } else if (itemName === "管理员增加 Banban币" || itemName === "管理员减少 Banban币") {
         type = "admin_adjustment";
-        amount = rawAmount;
+        amount = itemName.includes("减少") ? -Math.abs(rawAmount) : Math.abs(rawAmount);
+    }
+
+    if (type === "owed_payment") amount = Math.abs(rawAmount);
+    if (type === "owed_adjustment") {
+        amount = itemName.includes("\u51cf\u5c11") ? Math.abs(rawAmount) : -Math.abs(rawAmount);
     }
 
     return { ts: purchase.created_at, type, amount, itemId: itemName, itemName };

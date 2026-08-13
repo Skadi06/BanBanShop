@@ -439,13 +439,19 @@ function renderHistory() {
                     : h.type === "admin_adjustment"
                         ? amt >= 0 ? "兔兔银行增加" : "兔兔银行扣除"
                         : label;
+        const finalLabel =
+            h.type === "owed_payment"
+                ? "\u7528\u6237\u507f\u8fd8\u6b20\u6b3e"
+                : h.type === "owed_adjustment"
+                    ? amt >= 0 ? "\u7ba1\u7406\u5458\u51cf\u5c11\u6b20\u6b3e" : "\u7ba1\u7406\u5458\u589e\u52a0\u6b20\u6b3e"
+                    : displayLabel;
         const metaLine = h.type === "purchase" ? `Item: ${h.itemName}` : "";
 
         const el = document.createElement("div");
         el.className = "hitem";
         el.innerHTML = `
       <div class="hitem__top">
-        <div class="hitem__type">${escapeHtml(displayLabel)}</div>
+        <div class="hitem__type">${escapeHtml(finalLabel)}</div>
         <div class="hitem__amt ${amtClass}">${amt >= 0 ? "+" : ""}${amt}</div>
       </div>
       <div class="hitem__meta">${escapeHtml(fmtTs(h.ts))}${metaLine ? " - " + escapeHtml(metaLine) : ""}</div>

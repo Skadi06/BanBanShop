@@ -48,7 +48,7 @@ module.exports = async function handler(req, res) {
 
     const { error } = await supabaseAdmin.from("shop_purchases").insert({
       product: historyProduct,
-      price: amount
+      price: Math.abs(amount)
     });
     if (error) throw error;
 
