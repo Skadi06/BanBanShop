@@ -25,7 +25,17 @@ function mapPurchaseToHistoryRow(purchase) {
         admin_minus_owed: ["admin_minus_owed", value],
         user_pay_owed: ["user_pay_owed", value]
     };
-    const [type, amount] = codes[itemName] || ["purchase", -value];
+    let historyCode = itemName;
+    if (itemName === "Banban Coin owed payment" || itemName.startsWith("BanBan")) {
+        historyCode = itemName.includes("\u6b20\u6b3e") || itemName.includes("\u00e6\u00ac")
+            ? "admin_add_owed"
+            : "user_pay_owed";
+    } else if (itemName.includes("\u589e\u52a0") || itemName.includes("\u00e5\u00a2\u009e\u00e5\u008a\u00a0")) {
+        historyCode = itemName.includes("\u6b20\u6b3e") || itemName.includes("\u00e6\u00ac") ? "admin_add_owed" : "admin_add_coin";
+    } else if (itemName.includes("\u51cf\u5c11") || itemName.includes("\u6263\u9664") || itemName.includes("\u00e5\u0087\u008f\u00e5\u00b0\u0091") || itemName.includes("\u00e6\u0089\u00a3\u00e9\u0099\u00a4")) {
+        historyCode = itemName.includes("\u6b20\u6b3e") || itemName.includes("\u00e6\u00ac") ? "admin_minus_owed" : "admin_minus_coin";
+    }
+    const [type, amount] = codes[historyCode] || ["purchase", -value];
     return { ts: purchase.created_at, type, amount, itemId: itemName, itemName };
 }
 
